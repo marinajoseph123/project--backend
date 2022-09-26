@@ -1,0 +1,13 @@
+const router = require("express").Router()
+const auth = require("../app/middleware/auth")
+const Admin = require("../app/middleware/Admin")
+const productController =  require("../app/controller/product.controller")
+router.post("/create", Admin ,productController.create)
+router.get("/all", productController.all)
+router.get("/all/:id", productController.single)
+router.delete("/all/:id", Admin , productController.deleteProduct)
+router.patch("/all/:id", Admin ,productController.editProduct)
+const multer  = require('multer')
+const upload = multer({ dest: 'public/' })
+router.post('/profile/:id',Admin ,upload.single('img'),  productController.imgUpload)
+module.exports = router
