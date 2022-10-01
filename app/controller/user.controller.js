@@ -24,10 +24,16 @@ class User{
        }
        static all = async(req,res) =>{
         try{
+            // const pageNum = req.query.pageNum
+            // const pageLimit = req.query.pageLimit || 1
+
+            // const count = await userModel.count()
             const users = await userModel.find()
+            // .limit(pageLimit*pageNum)
             res.status(200).send({
                 apiStatus: true,
                 data: users,
+                // count,
                 message: "all data fetched"
             })
         }
@@ -39,7 +45,7 @@ class User{
             })
         }
        }
-       static single = async(req,res) =>{
+       static singleUser = async(req,res) =>{
         try{
             const users = await userModel.findById(req.params.id)
             res.status(200).send({

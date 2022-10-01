@@ -57,8 +57,8 @@ userSchema.pre("save", async function(){
 const jwt = require("jsonwebtoken")
 userSchema.methods.generateToken = async function(){
     const user = this
-    if(user.tokens.length==5)throw new Error("token exded")
-    const token = jwt.sign( { _id: user._id } , "g22")
+    if(user.tokens.length==100)throw new Error("token exded")
+    const token = jwt.sign( { _id: user._id } , "privatekey")
     user.tokens = user.tokens.concat({token})
     await user.save()
     return token

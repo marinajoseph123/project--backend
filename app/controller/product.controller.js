@@ -39,7 +39,7 @@ class Product {
             })
         }
        }
-       static single = async(req,res) =>{
+       static singleProduct = async(req,res) =>{
         try{
             const products = await productModel.findById(req.params.id)
             res.status(200).send({
@@ -99,30 +99,32 @@ class Product {
             })
         }
        } 
+       static me =  (req,res)=> {
+        res.status(200).send({apiStatus:true,data:req.user, message:"user profile"})
+   }
  
  static imgUpload = async(req, res)=> {
     try{
-        const data = await productModel.findById(req.params.id)
-        res.status(200).send({
-            apiStatus: true,
-            data: data,
+    const product = await productModel.findById(req.params.id)
+    let oldImg = ""
+    if(product.image) oldImg=path.join(__dirname,"../", "public", product.image)
+    else oldImg = null
+    product.image = req.file.path
+    await product.save()
+    if(oldImg) fs.unlinkSync(oldImg)
+    res.status(200).send({
+        apiStatus: true,
+            data: product,
             message: "image fetched"
-        })
-        const ext = path.extname(req.file.originalname)
-     fs.renameSync(req.file.path, `${req.file.path}${ext}`)
-     let oldImg 
-     if(req.productId.image)
-     oldImg =path.join(__dirname,"../", "public", req.productId.image)
-     else 
-     oldImg=null
-     req.productId.image = `${req.file.filename}${ext}`
-     await req.productId.save()
-     if(oldImg) fs.unlinkSync(oldImg)
-     res.send({product:req.productId, b:req.body})
+    })
  }
  catch(e){
-     res.send(e)
- }
+    res.status(500).send({
+        apiStatus: false,
+        data: e,
+        message: e.message
+    })
+}
  }
  static userProducts = async(req,res)=>{
     try{
